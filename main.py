@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -22,7 +23,7 @@ class RideResponse(BaseModel):
     dropoff_location: str
     status: str
     created_at: datetime
-    cancelled_at: datetime | None = None
+    cancelled_at: Optional[datetime] = None
 
 
 @app.get("/health")
@@ -83,8 +84,8 @@ def cancel_ride(ride_id: str):
         conn.close()
 
 
-@app.get("/rides", response_model=list[RideResponse])
-def list_rides(status: str | None = None):
+@app.get("/rides", response_model=List[RideResponse])
+def list_rides(status: Optional[str] = None):
     conn = get_connection()
     try:
         with conn.cursor() as cur:
